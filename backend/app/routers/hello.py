@@ -1,7 +1,8 @@
 from app.config import Settings, get_settings
 from app.schemas import AddPayload
-from digit_recognizer import config
 from fastapi import APIRouter, Depends
+
+from digit_recognizer import config
 
 router = APIRouter(prefix="/hello")
 
