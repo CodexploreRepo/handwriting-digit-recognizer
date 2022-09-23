@@ -1,0 +1,21 @@
+{
+  "editor.formatOnSave": true,
+  "python.formatting.provider": "black",
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#797979",
+    "titleBar.activeForeground": "#000000"
+  },
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
+  "[typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.sortImports": true
+    }
+  },
+  "python.testing.pytestArgs": ["backend", "src"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
+}

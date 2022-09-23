@@ -1,0 +1,26 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run App",
+      "dependsOn": ["Run FastApi Backend"]
+    },
+
+    {
+      "label": "Run FastApi Backend",
+      "type": "shell",
+      "command": "source venv/bin/activate && cd backend && uvicorn app.main:app --reload --reload-dir ../ --port 8080",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "develop"
+      },
+      "runOptions": {
+        "runOn": "default"
+      },
+      "dependsOn": []
+    }
+  ]
+}
