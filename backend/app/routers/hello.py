@@ -1,5 +1,6 @@
 from app.config import Settings, get_settings
 from app.schemas import AddPayload
+from digit_recognizer import config
 from fastapi import APIRouter, Depends
 
 router = APIRouter(prefix="/hello")
@@ -7,7 +8,7 @@ router = APIRouter(prefix="/hello")
 
 @router.get("/")
 def hello():
-    return {"Hello": "World"}
+    return {"Hello": config.PATH}
 
 
 @router.post("/add")
