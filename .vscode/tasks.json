@@ -7,7 +7,6 @@
       "label": "Run App",
       "dependsOn": ["Run FastApi Backend"]
     },
-
     {
       "label": "Run FastApi Backend",
       "type": "shell",
@@ -20,7 +19,8 @@
       "runOptions": {
         "runOn": "default"
       },
-      "dependsOn": []
+      "dependsOn": [],
+      "problemMatcher": []
     }
   ]
 }
