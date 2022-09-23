@@ -8,9 +8,6 @@ def get_argument_parser():
     """
     Argument parser which returns the options which the user inputted.
 
-    Args:
-        None
-
     Returns:
         argparse.ArgumentParser().parse_args()
     """
@@ -35,12 +32,14 @@ def get_argument_parser():
     return args
 
 
-def train():
+def main():
     """This is for training models"""
     # load all arguments
     args = get_argument_parser()
-    print(args.epochs, args.batch_size)
+    epochs = args.epochs
+    batch_size = args.batch_size
+    print(epochs, batch_size)
 
 
 if __name__ == "__main__":
-    train()
+    main()
