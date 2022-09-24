@@ -1,5 +1,5 @@
 # Handwriting Digit Recognizer using Deep Learning
-- heelo
+
 - Inspiration: [Kaggle Digit Recognizer](https://www.kaggle.com/competitions/digit-recognizer/)
 
 ## Installation
