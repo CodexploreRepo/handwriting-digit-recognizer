@@ -30,14 +30,14 @@ For the extra modules, which are not a standard pip modules (either from your ow
 |    **Model**    | **On the Validation set** | **On the test set** |
 | :-------------: | :-----------------------: | :-----------------: |
 |    Mobilenet    |          99.63%           |       99.68%        |
-|      VGG16      |          99.61%           |       99.68%        |
+|      VGG16      |          99.61%           |       99.68%        |
 |    Resnet164    |        **99.72%**         |       99.70%        |
 | WideResnet28-10 |        **99.72%**         |     **99.76%**      |
 
 | **Ensemble (all)** | **On the Validation set** | **On the test set** |
 | :----------------: | :-----------------------: | :-----------------: |
 | Unweighted average |          99.70%           |       99.75%        |
-|  Majority voting   |          99.71%           |       99.76%        |
+|  Majority voting   |         99.71%            |       99.76%        |
 |   Super Learner    |        **99.73%**         |     **99.77%**      |
 
 ## Training Methodology

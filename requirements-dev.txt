@@ -4,3 +4,4 @@ black
 flake8==3.9.2
 interrogate==1.5.0
 isort==5.9.3
+requests
