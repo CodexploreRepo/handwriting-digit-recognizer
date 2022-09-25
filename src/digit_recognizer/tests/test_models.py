@@ -5,6 +5,7 @@ from pathlib import Path
 import torch
 from torch.utils.data import DataLoader
 
+from digit_recognizer.models.models import BasicConvNet
 from digit_recognizer.utils.datamodule import MNISTDataModule
 
 
@@ -58,3 +59,12 @@ def test_datamodule():
         torch.Size([batch_size, 1, 28, 28]),
         torch.Size([batch_size]),
     ), "Testloader Function Issue"
+
+
+def test_model():
+    """Test that model outputs correct size"""
+    sample = torch.randn(3, 1, 28, 28)
+    model = BasicConvNet()
+    out_sample = model(sample)
+
+    assert out_sample.shape == torch.Size([3, 10]), "Output Size mismatch"
