@@ -83,8 +83,8 @@ class BasicConvNet(LightningModule):
             loss: loss for a single training batch
         """
         x, y = batch
-        logits = self(x)
-        loss = nn.CrossEntropyLoss(logits, y)
+        logits = F.log_softmax(self(x), dim=1)
+        loss = F.nll_loss(logits, y)
         self.log("Training Loss", loss)
         return loss
 
@@ -99,7 +99,7 @@ class BasicConvNet(LightningModule):
             loss: loss for a single validation batch
         """
         x, y = batch
-        logits = self(x)
-        val_loss = nn.CrossEntropyLoss(logits, y)
-        self.log("Training Loss", val_loss)
+        logits = F.log_softmax(self(x), dim=1)
+        val_loss = F.nll_loss(logits, y)
+        self.log("Val Loss", val_loss)
         return val_loss

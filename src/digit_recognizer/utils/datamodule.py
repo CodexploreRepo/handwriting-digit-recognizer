@@ -20,6 +20,8 @@ class MNISTDataModule(pl.LightningDataModule):
         """
         self.data_dir = data_dir
         self.batch_size = batch_size
+        self.save_hyperparameters()
+        self.prepare_data_per_node = False
 
         self.transforms = transforms.Compose(
             [
@@ -30,8 +32,6 @@ class MNISTDataModule(pl.LightningDataModule):
                 ),
             ]
         )
-
-        self.prepare_data()
 
     def prepare_data(self):
         """
