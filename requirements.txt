@@ -7,3 +7,6 @@ torchvision==0.13.1
 pytorch_lightning==1.7.7
 scikit-learn==1.1.2
 numpy==1.23.3
+pandas==1.5.0
+matplotlib==3.6.0
+matplotlib-inline==0.1.6
