@@ -78,3 +78,8 @@ class MNISTDataModule(pl.LightningDataModule):
         Return Test DataLoader using specified batch_size
         """
         return DataLoader(self.mnist_test, batch_size=self.batch_size)
+
+
+if __name__ == "__main__":
+    mnist_dm = MNISTDataModule()
+    mnist_dm.prepare_data()
