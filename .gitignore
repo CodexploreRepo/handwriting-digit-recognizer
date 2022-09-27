@@ -9,6 +9,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Ignore Data Folder
+data/
+
 # Distribution / packaging
 .Python
 build/
