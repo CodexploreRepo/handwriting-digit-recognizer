@@ -17,6 +17,7 @@ class DataModule_Interface(pl.LightningDataModule):
         self,
         data_dir: Union[pathlib.Path, str] = DATA_PATH,
         batch_size: int = 32,
+        val_split: float = 0.2,
     ) -> None:
         """
         Args:
@@ -28,6 +29,7 @@ class DataModule_Interface(pl.LightningDataModule):
             data_dir if isinstance(data_dir, pathlib.Path) else pathlib.Path(data_dir)
         )
         self.batch_size = batch_size
+        self.val_split = val_split
 
         # TODO: add comment for this attrbute
         self.save_hyperparameters()
