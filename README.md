@@ -40,6 +40,10 @@ For the extra modules, which are not a standard pip modules (either from your ow
 |  Majority voting   |         99.71%            |       99.76%        |
 |   Super Learner    |        **99.73%**         |     **99.77%**      |
 
+## Pytorch Lightning
+
+- To activate Tensorboard: `tensorboard --logdir=model_chkpt/lightning_logs/`
+
 ## Training Methodology
 
 ### Model Architectures

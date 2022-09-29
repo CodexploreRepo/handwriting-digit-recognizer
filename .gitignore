@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Data
+model_chkpt/lightning_logs/
 # MacOS
 .DS_Store
 

@@ -1,10 +1,9 @@
 """This is for Kaggle MNIST Dataset"""
 import pathlib
-from typing import Callable, Dict, Optional
+from typing import Callable, Optional
 
+import numpy as np
 import pandas as pd
-import torch
-from PIL import Image
 
 from digit_recognizer.dataset.interface import Dataset_Interface
 
@@ -51,7 +50,7 @@ class KaggleMNISTDataset(Dataset_Interface):
         """
         return len(self.data)
 
-    def __getitem__(self, index: int) -> Dict[str, torch.tensor]:
+    def __getitem__(self, index: int):
         """Get Item
 
         Args:
@@ -63,8 +62,8 @@ class KaggleMNISTDataset(Dataset_Interface):
         # @: list of all transform func on single sample of data
         # @: index : { sample, specific_target }
 
-        sample = self.data.iloc[index, :].values.reshape(28, 28)
-        sample = Image.fromarray(sample, mode="L")
+        sample = self.data.iloc[index, :].values.reshape(28, 28).astype(np.uint8)
+
         if self.transform is not None:
             sample = self.transform(sample)
         if self.train:
@@ -72,14 +71,7 @@ class KaggleMNISTDataset(Dataset_Interface):
             if self.target_transform is not None:
                 target = self.target_transform(target)
 
-        return (
-            {
-                "sample": sample,
-                "target": target,
-            }
-            if self.train
-            else {"sample": sample}
-        )
+        return sample, target if self.train else sample
 
 
 if __name__ == "__main__":

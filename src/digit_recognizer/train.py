@@ -1,11 +1,12 @@
 """This module is to train the models
 """
 import argparse
-from datetime import datetime
 
-from models.models import BasicConvNet
 from pytorch_lightning import Trainer
-from utils.datamodule import MNISTDataModule
+
+from digit_recognizer.config import MODEL_PATH
+from digit_recognizer.datamodule.mnist import KaggleMNISTDataModule
+from digit_recognizer.models.conv_net import BasicConvNet
 
 
 def get_argument_parser():
@@ -34,7 +35,7 @@ def get_argument_parser():
         "--batch_size",
         help="The number of images in a batch (default: 64)",
         type=int,
-        default=64,
+        default=32,
     )
 
     parser.add_argument(
@@ -59,20 +60,16 @@ def main():
     print(
         f"No of epochs: {epochs} \n Batch size: {batch_size} \n Learning rate: {learning_rate}"
     )
-    data_module = MNISTDataModule(batch_size=batch_size)
-    data_module.prepare_data()
+    data_module = KaggleMNISTDataModule(batch_size=batch_size)
     data_module.setup(stage="fit")
-    # train_loader = data_module.train_dataloader()
-    # val_loader = data_module.val_dataloader()
-    model = BasicConvNet(lr=learning_rate)
-    trainer = Trainer(max_epochs=epochs)
-    start_time = datetime.now()
+
+    model = BasicConvNet(lr=learning_rate).load_from_checkpoint(
+        MODEL_PATH / "lightning_logs/version_0/checkpoints/epoch=2-step=2346.ckpt"
+    )
+    trainer = Trainer(max_epochs=epochs, default_root_dir=MODEL_PATH)
+
     # trainer.fit(model, train_dataloaders=train_loader, val_dataloaders=val_loader)
     trainer.fit(model, datamodule=data_module)
-    time_elapsed = datetime.now() - start_time
-    print(
-        f"Time elapsed: {time_elapsed.seconds//3600} hours {time_elapsed.seconds/60} minutes"
-    )
 
 
 if __name__ == "__main__":

@@ -74,31 +74,41 @@ class MNISTDataModule(DataModule_Interface):
         """
         Return Train DataLoader using specified batch_size
         """
-        return DataLoader(self.mnist_train, batch_size=self.batch_size)
+        return DataLoader(
+            self.mnist_train,
+            batch_size=self.batch_size,
+            num_workers=self.num_workers,
+            drop_last=True,
+            shuffle=True,
+        )
 
     def val_dataloader(self) -> DataLoader:
         """
         Return Validation DataLoader using specified batch_size
         """
-        return DataLoader(self.mnist_val, batch_size=self.batch_size)
+        return DataLoader(
+            self.mnist_val, batch_size=self.batch_size, num_workers=self.num_workers
+        )
 
     def test_dataloader(self) -> DataLoader:
         """
         Return Test DataLoader using specified batch_size
         """
-        return DataLoader(self.mnist_test, batch_size=self.batch_size)
+        return DataLoader(
+            self.mnist_test, batch_size=self.batch_size, num_workers=self.num_workers
+        )
 
 
-class KaggleMNISTDataModule(MNISTDataModule):
+class KaggleMNISTDataModule(DataModule_Interface):
     """
-    LightningDataModule for Kaggle MNIST dataset
+    LightningDataModule for MNIST dataset
     """
 
     def __init__(
         self,
         data_dir: Union[pathlib.Path, str] = DATA_PATH / "Kaggle",
         batch_size: int = 32,
-        val_split: float = 0.2,
+        val_split: float = 0.01,
     ) -> None:
         """
         Args:
@@ -106,9 +116,11 @@ class KaggleMNISTDataModule(MNISTDataModule):
             batch_size (int, optional): Batch Size used to DataLoader. Defaults to 32.
             val_split (float, optional): Percentage Split between train_dataset and val_dataset. Defaults to 0.2.
         """
-        super(MNISTDataModule, self).__init__(data_dir, batch_size)
+        super(KaggleMNISTDataModule, self).__init__(data_dir, batch_size, val_split)
+
         self.transforms = transforms.Compose(
             [
+                transforms.ToPILImage(),
                 transforms.ToTensor(),
                 transforms.Normalize(
                     (0.5),
@@ -129,14 +141,41 @@ class KaggleMNISTDataModule(MNISTDataModule):
             self.mnist_full = KaggleMNISTDataset(
                 self.data_dir, train=True, transform=self.transforms
             )
-
-            ds_len = len(self.mnist_full)
+            valid_set_size = int(len(self.mnist_full) * self.val_split)
+            train_set_size = len(self.mnist_full) - valid_set_size
             self.mnist_train, self.mnist_val = random_split(
-                self.mnist_full,
-                [int(ds_len * (1 - self.val_split)), int(ds_len * self.val_split)],
+                self.mnist_full, [train_set_size, valid_set_size]
             )
 
         if stage == "test":
             self.mnist_test = KaggleMNISTDataset(
                 self.data_dir, train=False, transform=self.transforms
             )
+
+    def train_dataloader(self) -> DataLoader:
+        """
+        Return Train DataLoader using specified batch_size
+        """
+        return DataLoader(
+            self.mnist_train,
+            batch_size=self.batch_size,
+            num_workers=self.num_workers,
+            drop_last=True,
+            shuffle=True,
+        )
+
+    def val_dataloader(self) -> DataLoader:
+        """
+        Return Validation DataLoader using specified batch_size
+        """
+        return DataLoader(
+            self.mnist_val, batch_size=self.batch_size, num_workers=self.num_workers
+        )
+
+    def test_dataloader(self) -> DataLoader:
+        """
+        Return Test DataLoader using specified batch_size
+        """
+        return DataLoader(
+            self.mnist_test, batch_size=self.batch_size, num_workers=self.num_workers
+        )

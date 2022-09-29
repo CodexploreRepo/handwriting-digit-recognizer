@@ -1,5 +1,6 @@
 """This module contains Interface for DataModules
 """
+import os
 import pathlib
 from typing import Union
 
@@ -30,7 +31,7 @@ class DataModule_Interface(pl.LightningDataModule):
         )
         self.batch_size = batch_size
         self.val_split = val_split
-
+        self.num_workers = os.cpu_count()
         # TODO: add comment for this attrbute
         self.save_hyperparameters()
         self.prepare_data_per_node = False

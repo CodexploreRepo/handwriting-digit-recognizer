@@ -2,7 +2,7 @@
 """
 import torch
 
-from digit_recognizer.models.models import BasicConvNet
+from digit_recognizer.models.conv_net import BasicConvNet
 
 
 def test_model():
