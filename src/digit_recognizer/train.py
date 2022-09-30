@@ -11,8 +11,6 @@ from digit_recognizer.datamodule.mnist import KaggleMNISTDataModule
 from digit_recognizer.models.conv_net import BasicConvNet
 from digit_recognizer.utils import seed_everything
 
-seed_everything()
-
 
 def get_argument_parser():
     """
@@ -62,6 +60,8 @@ def main():
     epochs = args.epochs
     batch_size = args.batch_size
     learning_rate = args.learning_rate
+
+    seed_everything()
 
     print(
         f"No of epochs: {epochs} \n Batch size: {batch_size} \n Learning rate: {learning_rate}"
