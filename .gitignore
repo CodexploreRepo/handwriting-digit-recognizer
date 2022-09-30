@@ -5,6 +5,8 @@ __pycache__/
 
 # Data
 model_chkpt/lightning_logs/
+*.ckpt
+
 # MacOS
 .DS_Store
 
