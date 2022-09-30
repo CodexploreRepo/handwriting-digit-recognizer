@@ -1,12 +1,12 @@
 """This module contains Interface for DataModules
 """
-import os
+
 import pathlib
 from typing import Union
 
 import pytorch_lightning as pl
 
-from digit_recognizer.config import DATA_PATH
+from digit_recognizer.config import DATA_PATH, NUM_WORKERS
 
 
 class DataModule_Interface(pl.LightningDataModule):
@@ -19,6 +19,7 @@ class DataModule_Interface(pl.LightningDataModule):
         data_dir: Union[pathlib.Path, str] = DATA_PATH,
         batch_size: int = 32,
         val_split: float = 0.2,
+        num_workers: int = NUM_WORKERS,
     ) -> None:
         """
         Args:
@@ -31,7 +32,7 @@ class DataModule_Interface(pl.LightningDataModule):
         )
         self.batch_size = batch_size
         self.val_split = val_split
-        self.num_workers = os.cpu_count()
+        self.num_workers = num_workers
         # TODO: add comment for this attrbute
         self.save_hyperparameters()
         self.prepare_data_per_node = False
@@ -42,7 +43,7 @@ class DataModule_Interface(pl.LightningDataModule):
         """
         pass
 
-    def setup(self, stage: str) -> NotImplementedError:
+    def setup(self, stage: str = "train") -> NotImplementedError:
         """_summary_
 
         Args:
