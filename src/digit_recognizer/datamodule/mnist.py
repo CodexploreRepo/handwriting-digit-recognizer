@@ -129,28 +129,26 @@ class KaggleMNISTDataModule(DataModule_Interface):
             ]
         )
 
-    def setup(self, stage: str) -> None:
+    def setup(self, stage: str = "train") -> None:
         """_summary_
 
         Args:
             stage (str): "fit" or "test". Stage "fit" will split full train dataset into train set and validation set
             and store both datasets as class instances attributes. Stage "test" will return full test dataset.
         """
-        if stage == "fit":
 
-            self.mnist_full = KaggleMNISTDataset(
-                self.data_dir, train=True, transform=self.transforms
-            )
-            valid_set_size = int(len(self.mnist_full) * self.val_split)
-            train_set_size = len(self.mnist_full) - valid_set_size
-            self.mnist_train, self.mnist_val = random_split(
-                self.mnist_full, [train_set_size, valid_set_size]
-            )
+        self.mnist_full = KaggleMNISTDataset(
+            self.data_dir, train=True, transform=self.transforms
+        )
+        valid_set_size = int(len(self.mnist_full) * self.val_split)
+        train_set_size = len(self.mnist_full) - valid_set_size
+        self.mnist_train, self.mnist_val = random_split(
+            self.mnist_full, [train_set_size, valid_set_size]
+        )
 
-        if stage == "test":
-            self.mnist_test = KaggleMNISTDataset(
-                self.data_dir, train=False, transform=self.transforms
-            )
+        self.mnist_test = KaggleMNISTDataset(
+            self.data_dir, train=False, transform=self.transforms
+        )
 
     def train_dataloader(self) -> DataLoader:
         """
@@ -162,6 +160,8 @@ class KaggleMNISTDataModule(DataModule_Interface):
             num_workers=self.num_workers,
             drop_last=True,
             shuffle=True,
+            persistent_workers=True,
+            pin_memory=True,
         )
 
     def val_dataloader(self) -> DataLoader:
@@ -169,7 +169,11 @@ class KaggleMNISTDataModule(DataModule_Interface):
         Return Validation DataLoader using specified batch_size
         """
         return DataLoader(
-            self.mnist_val, batch_size=self.batch_size, num_workers=self.num_workers
+            self.mnist_val,
+            batch_size=self.batch_size,
+            num_workers=self.num_workers,
+            persistent_workers=True,
+            pin_memory=True,
         )
 
     def test_dataloader(self) -> DataLoader:
@@ -177,5 +181,7 @@ class KaggleMNISTDataModule(DataModule_Interface):
         Return Test DataLoader using specified batch_size
         """
         return DataLoader(
-            self.mnist_test, batch_size=self.batch_size, num_workers=self.num_workers
+            self.mnist_test,
+            batch_size=self.batch_size,
+            num_workers=self.num_workers,
         )

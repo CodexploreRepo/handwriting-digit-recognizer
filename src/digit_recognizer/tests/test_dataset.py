@@ -15,11 +15,11 @@ def test_kaggle_mnist_class():
         train=True,
         transform=transforms.ToTensor(),
     )
-    example = kg_mnist[1]
+    img, _ = kg_mnist[1]
 
     assert len(kg_mnist) == 42000
     # This to ensure the sample is 28x28 image
-    assert example["sample"].shape == torch.Size([1, 28, 28])
+    assert img.shape == torch.Size([1, 28, 28])
 
     # Test Dataset: 28k data
     kg_mnist_test = KaggleMNISTDataset(
