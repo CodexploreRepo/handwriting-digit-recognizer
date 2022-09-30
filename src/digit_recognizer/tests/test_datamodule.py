@@ -1,10 +1,12 @@
 """This module is to test Data Module
 """
+import shutil
 from pathlib import Path
 
 import torch
 from torch.utils.data import DataLoader
 
+from digit_recognizer.config import DATA_PATH
 from digit_recognizer.datamodule.mnist import KaggleMNISTDataModule, MNISTDataModule
 
 
@@ -29,7 +31,8 @@ def test_datamodule():
         return images.shape, labels.shape
 
     batch_size = 64
-    test_module = MNISTDataModule(batch_size=batch_size)
+    test_module = MNISTDataModule(data_dir=DATA_PATH / "test", batch_size=batch_size)
+    test_module.prepare_data()
     path = Path(test_module.data_dir) / "MNIST"
     assert path.exists(), "Data Not Downloaded"
 
@@ -58,6 +61,9 @@ def test_datamodule():
         torch.Size([batch_size, 1, 28, 28]),
         torch.Size([batch_size]),
     ), "Testloader Function Issue"
+
+    ## Delete Data from location after complete
+    shutil.rmtree(DATA_PATH / "test")
 
 
 def test_kaggle_datamodule():
