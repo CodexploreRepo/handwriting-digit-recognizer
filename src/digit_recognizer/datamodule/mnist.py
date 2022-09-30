@@ -108,7 +108,7 @@ class KaggleMNISTDataModule(DataModule_Interface):
         self,
         data_dir: Union[pathlib.Path, str] = DATA_PATH / "Kaggle",
         batch_size: int = 32,
-        val_split: float = 0.01,
+        val_split: float = 0.2,
     ) -> None:
         """
         Args:
