@@ -111,3 +111,9 @@ class BasicConvNet(LightningModule):
             {"val_acc": acc, "val_loss": val_loss}, prog_bar=True, logger=True
         )
         return val_loss
+
+    def predict_step(self, batch, batch_idx: int, dataloader_idx: int = 0):
+        logits = self(batch)
+        logits = F.softmax(logits, dim=1)
+        preds = torch.argmax(logits, dim=1)
+        return preds
