@@ -71,7 +71,7 @@ class KaggleMNISTDataset(Dataset_Interface):
             if self.target_transform is not None:
                 target = self.target_transform(target)
 
-        return sample, target if self.train else sample
+        return (sample, target) if self.train else sample
 
 
 if __name__ == "__main__":
