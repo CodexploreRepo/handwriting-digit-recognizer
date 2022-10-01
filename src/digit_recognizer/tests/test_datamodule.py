@@ -91,7 +91,6 @@ def test_kaggle_datamodule():
     test_module = KaggleMNISTDataModule(batch_size=batch_size, val_split=0.2)
 
     # Testing LENGTH OF TRAIN, TEST with val_split = 0.2
-    test_module.setup()
     assert len(test_module.mnist_full) == 42000, "Full train_dataset size mismatched"
     assert len(test_module.mnist_train) == 33600, "Split train_dataset size mismatched"
 
