@@ -179,7 +179,7 @@ class KaggleMNISTDataModule(DataModule_Interface):
 
     def test_dataloader(self) -> DataLoader:
         """
-        Return Test DataLoader using specified batch_size
+        Return Test DataLoader using specified batch_size. Use validation set as Test set.
         """
         return DataLoader(
             self.mnist_val,
@@ -188,6 +188,7 @@ class KaggleMNISTDataModule(DataModule_Interface):
         )
 
     def predict_dataloader(self) -> DataLoader:
+        """Return Predict DataLoader. For inference."""
         return DataLoader(
             self.mnist_test,
             batch_size=self.batch_size,
