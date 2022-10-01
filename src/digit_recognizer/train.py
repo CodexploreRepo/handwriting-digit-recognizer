@@ -1,11 +1,15 @@
 """This module is to train the models
 """
 import argparse
-from datetime import datetime
 
-from models.models import BasicConvNet
 from pytorch_lightning import Trainer
-from utils.datamodule import MNISTDataModule
+from pytorch_lightning.callbacks import EarlyStopping, model_checkpoint
+from pytorch_lightning.profiler import SimpleProfiler
+
+from digit_recognizer.config import MODEL_PATH
+from digit_recognizer.datamodule.mnist import KaggleMNISTDataModule
+from digit_recognizer.models.conv_net import BasicConvNet
+from digit_recognizer.utils import seed_everything
 
 
 def get_argument_parser():
@@ -34,7 +38,7 @@ def get_argument_parser():
         "--batch_size",
         help="The number of images in a batch (default: 64)",
         type=int,
-        default=64,
+        default=32,
     )
 
     parser.add_argument(
@@ -56,23 +60,46 @@ def main():
     epochs = args.epochs
     batch_size = args.batch_size
     learning_rate = args.learning_rate
+
+    seed_everything()
+
     print(
         f"No of epochs: {epochs} \n Batch size: {batch_size} \n Learning rate: {learning_rate}"
     )
-    data_module = MNISTDataModule(batch_size=batch_size)
-    data_module.prepare_data()
-    data_module.setup(stage="fit")
-    # train_loader = data_module.train_dataloader()
-    # val_loader = data_module.val_dataloader()
+    data_module = KaggleMNISTDataModule(batch_size=batch_size)
+    data_module.setup()
+
     model = BasicConvNet(lr=learning_rate)
-    trainer = Trainer(max_epochs=epochs)
-    start_time = datetime.now()
-    # trainer.fit(model, train_dataloaders=train_loader, val_dataloaders=val_loader)
-    trainer.fit(model, datamodule=data_module)
-    time_elapsed = datetime.now() - start_time
-    print(
-        f"Time elapsed: {time_elapsed.seconds//3600} hours {time_elapsed.seconds/60} minutes"
+    model_path = MODEL_PATH / "acc_97.ckpt"
+    if model_path.exists():
+        model = model.load_from_checkpoint(model_path)
+
+    profiler = SimpleProfiler()
+
+    model_checkpoint_callback = model_checkpoint.ModelCheckpoint(
+        filename="{epoch}-{step}-loss_{val_loss:.2f}-acc_{val_acc:.2f}",
+        save_top_k=2,
+        monitor="val_loss",
+        mode="min",  # stop when get a min val_loss
     )
+    early_stop_callback = EarlyStopping(
+        monitor="val_loss",
+        patience=3,
+        verbose=True,
+        mode="min",  # stop when get a min val_loss
+    )
+
+    trainer = Trainer(
+        max_epochs=epochs,
+        default_root_dir=MODEL_PATH,  # where the lightning_log is stored
+        # accelerator="gpu",
+        log_every_n_steps=100,
+        callbacks=[early_stop_callback, model_checkpoint_callback],
+        profiler=profiler,
+        # precision=16,
+    )
+
+    trainer.fit(model, datamodule=data_module)
 
 
 if __name__ == "__main__":

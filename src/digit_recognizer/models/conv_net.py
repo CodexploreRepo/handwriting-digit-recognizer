@@ -41,6 +41,9 @@ class BasicConvNet(LightningModule):
         self.bn2 = nn.BatchNorm2d(num_features=64)
         self.bn3 = nn.BatchNorm2d(num_features=128)
 
+        self.learning_rate = lr
+        self.loss_fn = nn.CrossEntropyLoss()
+
     def forward(self, inputs):
         """Model Forward Propagation step
 
@@ -68,7 +71,7 @@ class BasicConvNet(LightningModule):
         Returns:
             torch optimizer: inherits hparams["lr"] for learning rate hyperparameters
         """
-        return torch.optim.Adam(self.parameters(), lr=self.hparams["lr"])
+        return torch.optim.Adam(self.parameters(), lr=self.learning_rate)
 
     def training_step(self, batch, batch_idx):
         """Pytorch Lightning training step. This step involves reseting gradient,
@@ -83,9 +86,9 @@ class BasicConvNet(LightningModule):
             loss: loss for a single training batch
         """
         x, y = batch
-        logits = F.log_softmax(self(x), dim=1)
-        loss = F.nll_loss(logits, y)
-        self.log("Training Loss", loss)
+        logits = self(x)
+        loss = self.loss_fn(logits, y)
+        self.log("training_loss", loss, prog_bar=True, logger=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -99,7 +102,12 @@ class BasicConvNet(LightningModule):
             loss: loss for a single validation batch
         """
         x, y = batch
-        logits = F.log_softmax(self(x), dim=1)
-        val_loss = F.nll_loss(logits, y)
-        self.log("Val Loss", val_loss)
+        logits = self(x)
+        val_loss = self.loss_fn(logits, y)
+
+        prediction = torch.argmax(logits, 1)
+        acc = (prediction == y).sum() / len(y)
+        self.log_dict(
+            {"val_acc": acc, "val_loss": val_loss}, prog_bar=True, logger=True
+        )
         return val_loss
