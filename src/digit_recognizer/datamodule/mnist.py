@@ -128,6 +128,7 @@ class KaggleMNISTDataModule(DataModule_Interface):
                 ),
             ]
         )
+        self.setup()
 
     def setup(self, stage: str = "train") -> None:
         """_summary_
@@ -180,6 +181,13 @@ class KaggleMNISTDataModule(DataModule_Interface):
         """
         Return Test DataLoader using specified batch_size
         """
+        return DataLoader(
+            self.mnist_val,
+            batch_size=self.batch_size,
+            num_workers=self.num_workers,
+        )
+
+    def predict_dataloader(self) -> DataLoader:
         return DataLoader(
             self.mnist_test,
             batch_size=self.batch_size,
