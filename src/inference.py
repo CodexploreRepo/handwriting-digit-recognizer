@@ -8,9 +8,8 @@ import torch
 # import torch.nn.functional as F
 from pytorch_lightning import Trainer
 
-from digit_recognizer.config import MODEL_PATH, RESULT_PATH
+from digit_recognizer.config import MODEL_PARAMS, MODEL_PATH, RESULT_PATH
 from digit_recognizer.datamodule.mnist import KaggleMNISTDataModule
-from digit_recognizer.models.conv_net import BasicConvNet
 from digit_recognizer.utils import seed_everything
 
 # from tqdm import tqdm
@@ -45,10 +44,6 @@ def inference_kaggle(ver: int):
 
     seed_everything()
 
-    kaggle_data_module = KaggleMNISTDataModule(batch_size=32)
-
-    # test_dataloader = kaggle_data_module.predict_dataloader()
-
     version = "version_" + str(ver)
     ckpt_folder = MODEL_PATH / "lightning_logs" / version
 
@@ -58,7 +53,13 @@ def inference_kaggle(ver: int):
         file_list = [str(file) for file in (ckpt_folder / "checkpoints").glob("*")]
         model_path = [file for file in file_list if file.endswith(".ckpt")][0]
 
-    model = BasicConvNet()
+    model_type = model_path.split("/")[-1].split("-")[0]
+    print(f"Inference Using {model_type} at checkpoint {version}")
+    kaggle_data_module = KaggleMNISTDataModule(
+        batch_size=32, rbg=MODEL_PARAMS[model_type]["rbg"]
+    )
+
+    model = MODEL_PARAMS[model_type]["model"]()
     # model = model.load_from_checkpoint(model_path)
 
     trainer = Trainer(deterministic=True)
