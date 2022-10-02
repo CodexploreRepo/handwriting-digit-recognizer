@@ -95,7 +95,15 @@ class MNISTDataModule(DataModule_Interface):
         Return Test DataLoader using specified batch_size
         """
         return DataLoader(
-            self.mnist_test, batch_size=self.batch_size, num_workers=self.num_workers
+            self.mnist_val, batch_size=self.batch_size, num_workers=self.num_workers
+        )
+
+    def predict_dataloader(self) -> DataLoader:
+        """Return Predict DataLoader. For inference."""
+        return DataLoader(
+            self.mnist_test,
+            batch_size=self.batch_size,
+            num_workers=self.num_workers,
         )
 
 
@@ -108,6 +116,7 @@ class KaggleMNISTDataModule(DataModule_Interface):
         self,
         data_dir: Union[pathlib.Path, str] = DATA_PATH / "Kaggle",
         batch_size: int = 32,
+        rbg: bool = False,
         val_split: float = 0.2,
     ) -> None:
         """
@@ -118,6 +127,7 @@ class KaggleMNISTDataModule(DataModule_Interface):
         """
         super(KaggleMNISTDataModule, self).__init__(data_dir, batch_size, val_split)
 
+        self.rbg = rbg
         self.transforms = transforms.Compose(
             [
                 transforms.ToPILImage(),
@@ -139,7 +149,7 @@ class KaggleMNISTDataModule(DataModule_Interface):
         """
 
         self.mnist_full = KaggleMNISTDataset(
-            self.data_dir, train=True, transform=self.transforms
+            self.data_dir, train=True, rbg=self.rbg, transform=self.transforms
         )
         valid_set_size = int(len(self.mnist_full) * self.val_split)
         train_set_size = len(self.mnist_full) - valid_set_size
@@ -148,7 +158,7 @@ class KaggleMNISTDataModule(DataModule_Interface):
         )
 
         self.mnist_test = KaggleMNISTDataset(
-            self.data_dir, train=False, transform=self.transforms
+            self.data_dir, train=False, rbg=self.rbg, transform=self.transforms
         )
 
     def train_dataloader(self) -> DataLoader:
