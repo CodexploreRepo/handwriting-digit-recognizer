@@ -1,14 +1,14 @@
 """This module is to train the models
 """
 import argparse
+import os
 
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import EarlyStopping, model_checkpoint
 from pytorch_lightning.profiler import SimpleProfiler
 
-from digit_recognizer.config import MODEL_PATH
+from digit_recognizer.config import MODEL_PARAMS, MODEL_PATH
 from digit_recognizer.datamodule.mnist import KaggleMNISTDataModule
-from digit_recognizer.models.conv_net import BasicConvNet
 from digit_recognizer.utils import seed_everything
 
 
@@ -16,6 +16,7 @@ def get_argument_parser():
     """
     Argument parser which returns the options which the user inputted.
     Arguments:
+    - Model
     - No of epochs
     - Learning rate
     - Batch size
@@ -25,6 +26,15 @@ def get_argument_parser():
     """
 
     parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "-m",
+        "--model",
+        help="Choice of model (default: basic_conv_net)",
+        type=str,
+        default="basic_conv_net",
+    )
+
     parser.add_argument(
         "-e",
         "--epochs",
@@ -49,6 +59,14 @@ def get_argument_parser():
         default=1e-4,
     )
 
+    parser.add_argument(
+        "-v",
+        "--version",
+        help="ckpt location to load from (default: -1 (No checkpoint load))",
+        type=int,
+        default=-1,
+    )
+
     args = parser.parse_args()
     return args
 
@@ -60,23 +78,46 @@ def main():
     epochs = args.epochs
     batch_size = args.batch_size
     learning_rate = args.learning_rate
+    model_name = args.model
+    ver = args.version
 
     seed_everything()
 
     print(
         f"No of epochs: {epochs} \n Batch size: {batch_size} \n Learning rate: {learning_rate}"
     )
-    data_module = KaggleMNISTDataModule(batch_size=batch_size)
+    data_module = KaggleMNISTDataModule(
+        batch_size=batch_size,
+        rbg=MODEL_PARAMS[model_name]["rbg"],
+    )
 
-    model = BasicConvNet(lr=learning_rate)
-    model_path = MODEL_PATH / "acc_97.ckpt"
-    if model_path.exists():
-        model = model.load_from_checkpoint(model_path)
+    if model_name in MODEL_PARAMS:
+        model = MODEL_PARAMS[model_name]["model"](lr=learning_rate)
+    else:
+        raise Exception("Model Not Setup. Please configure your model in config.py")
+
+    version = "version_" + str(ver)
+    cpkt_path = MODEL_PATH / "lightning_logs" / version
+    if cpkt_path.exists():
+        model_path = [
+            f
+            for f in os.listdir(str(cpkt_path) + "/checkpoints")
+            if f.endswith(".ckpt")
+        ][0]
+        if model_path.split("-")[0] == model_name:
+            model = model.load_from_checkpoint(
+                str(cpkt_path) + "/checkpoints/" + model_path
+            )
+            print(f"Checkpoint successfully loaded on {model_name} using {version}")
+        else:
+            print("Model type mismatched. No checkpoint loaded")
+    else:
+        print("No ckpt_path found. No checkpoint loaded")
 
     profiler = SimpleProfiler()
 
     model_checkpoint_callback = model_checkpoint.ModelCheckpoint(
-        filename="{epoch}-{step}-loss_{val_loss:.2f}-acc_{val_acc:.2f}",
+        filename=model_name + "-{epoch}-{step}-loss_{val_loss:.2f}-acc_{val_acc:.5f}",
         save_top_k=1,
         monitor="val_loss",
         mode="min",  # stop when get a min val_loss
@@ -103,3 +144,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+## python3 train.py -m basic_conv_net -v 0 -e 3
