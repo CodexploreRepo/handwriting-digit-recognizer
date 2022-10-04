@@ -33,7 +33,7 @@ For the extra modules, which are not a standard pip modules (either from your ow
 |    Mobilenet    |        **xx.xx%**         |    **xx.xx%**     |
 |      VGG16      |        **xx.xx%**         |    **xx.xx%**     |
 |    Resnet50     |        **99.00%**         |    **98.85%**     |
-|    Resnet164    |        **xx.xx%**         |    **xx.xx%**     |
+|    Resnet18     |        **99.19%**         |    **99.17%**     |
 | WideResnet28-10 |        **xx.xx%**         |    **xx.xx%**     |
 
 ## Pytorch Lightning
@@ -41,6 +41,8 @@ For the extra modules, which are not a standard pip modules (either from your ow
 - To activate Tensorboard: `tensorboard --logdir=model_chkpt/lightning_logs/`
 
 ## Training Methodology
+
+- To train a model: `python ./src/train.py -m <model_name> -e <epochs> -bs <batch_size> -lr <learning_rate> -v <version>`
 
 ### Model Architectures
 
