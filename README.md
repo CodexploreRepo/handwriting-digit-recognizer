@@ -27,18 +27,18 @@ For the extra modules, which are not a standard pip modules (either from your ow
 
 ## Result Evaluation
 
-|    **Model**    | **On the Validation set** | **On the test set** |
-| :-------------: | :-----------------------: | :-----------------: |
-|    Mobilenet    |          99.63%           |       99.68%        |
-|      VGG16      |          99.61%           |       99.68%        |
-|    Resnet164    |        **99.72%**         |       99.70%        |
-| WideResnet28-10 |        **99.72%**         |     **99.76%**      |
+|    **Model**    | **On the Validation set** | **On Kaggle set** |
+| :-------------: | :-----------------------: | :---------------: |
+|   Basic Conv    |         **100%**          |      **99%**      |
+|    Mobilenet    |        **xx.xx%**         |    **xx.xx%**     |
+|      VGG16      |        **xx.xx%**         |    **xx.xx%**     |
+|    Resnet50     |        **99.00%**         |    **98.85%**     |
+|    Resnet164    |        **xx.xx%**         |    **xx.xx%**     |
+| WideResnet28-10 |        **xx.xx%**         |    **xx.xx%**     |
 
-| **Ensemble (all)** | **On the Validation set** | **On the test set** |
-| :----------------: | :-----------------------: | :-----------------: |
-| Unweighted average |          99.70%           |       99.75%        |
-|  Majority voting   |         99.71%            |       99.76%        |
-|   Super Learner    |        **99.73%**         |     **99.77%**      |
+## Pytorch Lightning
+
+- To activate Tensorboard: `tensorboard --logdir=model_chkpt/lightning_logs/`
 
 ## Training Methodology
 
@@ -54,3 +54,11 @@ For the extra modules, which are not a standard pip modules (either from your ow
 - Unweighted average
 - Majority voting
 - [Super Learner](https://arxiv.org/abs/1704.01664)
+
+## Pytest
+
+```Shell
+pytest --durations=0 #Show all times for tests and setup and teardown
+
+pytest --durations=1 #Just show me the slowest
+```

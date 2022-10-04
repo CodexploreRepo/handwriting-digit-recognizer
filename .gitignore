@@ -3,11 +3,17 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Data
+model_chkpt/lightning_logs/
+lightning_logs
+*.ckpt
+
 # MacOS
 .DS_Store
 
 # C extensions
 *.so
+
 
 # Distribution / packaging
 .Python
