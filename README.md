@@ -29,13 +29,12 @@ For the extra modules, which are not a standard pip modules (either from your ow
 
 |    **Model**    | **On the Validation set** | **On Kaggle set** |
 | :-------------: | :-----------------------: | :---------------: |
-|   Basic Conv    |        **98.80%**         |    **98.68%**     |
+|   Basic Conv    |         **100%**          |      **99%**      |
 |    Mobilenet    |        **xx.xx%**         |    **xx.xx%**     |
 |      VGG16      |        **xx.xx%**         |    **xx.xx%**     |
 |    Resnet50     |        **99.00%**         |    **98.85%**     |
 |    Resnet164    |        **xx.xx%**         |    **xx.xx%**     |
 | WideResnet28-10 |        **xx.xx%**         |    **xx.xx%**     |
-|   **99.73%**    |        **99.77%**         |    **xx.xx%**     |
 
 ## Pytorch Lightning
 

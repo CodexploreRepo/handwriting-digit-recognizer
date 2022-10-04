@@ -5,13 +5,13 @@ from typing import Union
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torchvision import models
+from torchvision.models import ResNet50_Weights, resnet50
 
 from digit_recognizer.models.conv_net import BasicConvNet
 from digit_recognizer.models.interface import Model_Interface
 
 
-class Pretrained(Model_Interface):
+class PretrainedAbstract(Model_Interface):
     """Generic Pretrained Model
     Setup Replace common replace last layer method for all future Pretrained Model
     to replace final layer with fully connected layer on correct num_classes.
@@ -30,7 +30,7 @@ class Pretrained(Model_Interface):
             lr (float, optional): Learning Rate. Defaults to 1e-4.
             dropout_rate (float, optional): Dropout Rate. Defaults to 0.3.
         """
-        super(Pretrained, self).__init__(num_classes, lr, dropout_rate)
+        super(PretrainedAbstract, self).__init__(num_classes, lr, dropout_rate)
         self.model = BasicConvNet()
 
     def forward(self, inputs):
@@ -45,11 +45,15 @@ class Pretrained(Model_Interface):
         self.featveclen = last_layer.weight.shape[1]
 
         if len(last_layer_name.split(".")) == 2:
+            # For Inception model, last_layer_name = inception.fc
+            # Replace last layer with nn.Identity(), model.inception.fc = nn.Idenity()
             exec(
                 "self.model.%s[%s] = nn.Identity()"
                 % (last_layer_name.split(".")[0], last_layer_name.split(".")[1])
             )
         else:
+            # For other pretrained model,
+            # model.fc = nn.Idenity()
             exec("self.model.%s = nn.Identity()" % (last_layer_name,))
 
     def configure_optimizers(self):
@@ -115,7 +119,7 @@ class Pretrained(Model_Interface):
         return preds
 
 
-class PretrainedResNet50(Pretrained):
+class PretrainedResNet50(PretrainedAbstract):
     """Pretrained ResNet50 model"""
 
     def __init__(
@@ -139,8 +143,9 @@ class PretrainedResNet50(Pretrained):
             weights for any layers. If given int value, freeze weights of the
             first (bottom) number of layers. Defaults to False.
         """
-        super(Pretrained, self).__init__(num_classes, lr, dropout_rate)
-        self.model = models.resnet50(weights=models.ResNet50_Weights.DEFAULT)
+        super(PretrainedResNet50, self).__init__(num_classes, lr, dropout_rate)
+        self.model = resnet50(weights=ResNet50_Weights.DEFAULT)
+        # To update self.featveclen attribute
         self.replace_last_layer()
 
         if freeze:

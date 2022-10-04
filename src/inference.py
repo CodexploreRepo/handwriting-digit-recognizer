@@ -48,7 +48,7 @@ def inference_kaggle(ver: int):
     ckpt_folder = MODEL_PATH / "lightning_logs" / version
 
     if not ckpt_folder.exists():
-        raise Exception("Invalid Checkpoint")
+        model_path = input("Invalid Checkpoint, please Enter: ")
     else:
         file_list = [str(file) for file in (ckpt_folder / "checkpoints").glob("*")]
         model_path = [file for file in file_list if file.endswith(".ckpt")][0]
