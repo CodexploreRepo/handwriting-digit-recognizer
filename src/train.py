@@ -12,6 +12,15 @@ from digit_recognizer.datamodule.mnist import KaggleMNISTDataModule
 from digit_recognizer.utils import seed_everything
 
 
+def hello(a):
+    """_summary_
+
+    Args:
+        a (_type_): _description_
+    """
+    print(a)
+
+
 def get_argument_parser():
     """
     Argument parser which returns the options which the user inputted.
