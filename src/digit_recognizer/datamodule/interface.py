@@ -19,6 +19,7 @@ class DataModule_Interface(pl.LightningDataModule):
         data_dir: Union[pathlib.Path, str] = DATA_PATH,
         batch_size: int = 32,
         val_split: float = 0.2,
+        rbg: bool = False,
         num_workers: int = NUM_WORKERS,
     ) -> None:
         """
@@ -33,6 +34,7 @@ class DataModule_Interface(pl.LightningDataModule):
         self.batch_size = batch_size
         self.val_split = val_split
         self.num_workers = num_workers
+        self.rbg = rbg
         # TODO: add comment for this attrbute
         self.save_hyperparameters()
         self.prepare_data_per_node = False

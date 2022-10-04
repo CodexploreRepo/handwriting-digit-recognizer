@@ -62,6 +62,12 @@ def test_datamodule():
         torch.Size([batch_size]),
     ), "Testloader Function Issue"
 
+    predictloader = test_module.predict_dataloader()
+    assert get_sample_size(predictloader, batch_size) == (
+        torch.Size([batch_size, 1, 28, 28]),
+        torch.Size([batch_size]),
+    ), "Predict_loader Function Issue"
+
     ## Delete Data from location after complete
     shutil.rmtree(DATA_PATH / "test")
 
@@ -91,7 +97,6 @@ def test_kaggle_datamodule():
     test_module = KaggleMNISTDataModule(batch_size=batch_size, val_split=0.2)
 
     # Testing LENGTH OF TRAIN, TEST with val_split = 0.2
-    test_module.setup()
     assert len(test_module.mnist_full) == 42000, "Full train_dataset size mismatched"
     assert len(test_module.mnist_train) == 33600, "Split train_dataset size mismatched"
 
@@ -108,3 +113,32 @@ def test_kaggle_datamodule():
         torch.Size([batch_size, 1, 28, 28]),
         torch.Size([batch_size]),
     ), "Valloader Function Issue"
+
+    predictloader = test_module.predict_dataloader()
+    images = next(iter(predictloader))
+    assert images.shape == torch.Size(
+        [batch_size, 1, 28, 28]
+    ), "Predict_loader Function Issue"
+
+    test_module_rbg = KaggleMNISTDataModule(
+        batch_size=batch_size, rbg=True, val_split=0.2
+    )
+
+    train_loader = test_module_rbg.train_dataloader()
+    assert get_sample_size(train_loader, batch_size) == (
+        torch.Size([batch_size, 3, 28, 28]),
+        torch.Size([batch_size]),
+    ), "Trainloader Function Issue"
+
+    val_loader = test_module_rbg.val_dataloader()
+    assert get_sample_size(val_loader, batch_size) == (
+        torch.Size([batch_size, 3, 28, 28]),
+        torch.Size([batch_size]),
+    ), "Valloader Function Issue"
+
+    predictloader = test_module_rbg.predict_dataloader()
+    images = next(iter(predictloader))
+    print(images)
+    assert images.shape == torch.Size(
+        [batch_size, 3, 28, 28]
+    ), "Predict_loader Function Issue"

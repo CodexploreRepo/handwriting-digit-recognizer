@@ -4,12 +4,13 @@
 2.
 """
 import torch
-from pytorch_lightning import LightningModule
 from torch import nn
 from torch.nn import functional as F
 
+from digit_recognizer.models.interface import Model_Interface
 
-class BasicConvNet(LightningModule):
+
+class BasicConvNet(Model_Interface):
     """BasicConvNet
     1. 3 Conv2d layers with BatchNorm
     2. 2 MaxPool layers
@@ -18,8 +19,7 @@ class BasicConvNet(LightningModule):
     """
 
     def __init__(self, num_classes=10, lr=1e-4, dropout_rate=0.3):
-        super(BasicConvNet, self).__init__()
-        self.save_hyperparameters()
+        super(BasicConvNet, self).__init__(num_classes, lr, dropout_rate)
         self.conv1 = nn.Conv2d(
             in_channels=1, out_channels=32, kernel_size=3, stride=1, padding=1
         )
@@ -35,14 +35,9 @@ class BasicConvNet(LightningModule):
         self.fc2 = nn.Linear(in_features=64, out_features=32, bias=False)
         self.fc3 = nn.Linear(in_features=32, out_features=num_classes, bias=False)
 
-        self.flatten = nn.Flatten()
-        self.dropout = nn.Dropout(p=dropout_rate)
         self.bn1 = nn.BatchNorm2d(num_features=32)
         self.bn2 = nn.BatchNorm2d(num_features=64)
         self.bn3 = nn.BatchNorm2d(num_features=128)
-
-        self.learning_rate = lr
-        self.loss_fn = nn.CrossEntropyLoss()
 
     def forward(self, inputs):
         """Model Forward Propagation step
@@ -111,3 +106,18 @@ class BasicConvNet(LightningModule):
             {"val_acc": acc, "val_loss": val_loss}, prog_bar=True, logger=True
         )
         return val_loss
+
+    def predict_step(self, batch, batch_idx: int, dataloader_idx: int = 0):
+        """Predict Step for inference
+        Args:
+            batch (_type_): _description_
+            batch_idx (int): _description_
+            dataloader_idx (int, optional): _description_. Defaults to 0.
+
+        Returns:
+            torch.Tensor: Size = (batch_size, num_classes)
+        """
+        logits = self(batch)
+        logits = F.softmax(logits, dim=1)
+        preds = torch.argmax(logits, dim=1)
+        return preds

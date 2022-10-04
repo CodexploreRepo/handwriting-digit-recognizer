@@ -19,6 +19,7 @@ class KaggleMNISTDataset(Dataset_Interface):
         self,
         data_path: pathlib.Path,
         train: bool = True,
+        rbg: bool = False,
         transform: Optional[Callable] = None,
         target_transform: Optional[Callable] = None,
     ) -> None:
@@ -33,6 +34,7 @@ class KaggleMNISTDataset(Dataset_Interface):
         self.train = train
         self.data_path = data_path / f'{"train" if self.train else "test"}.csv'
         self.transform = transform
+        self.rbg = rbg
         self.target_transform = target_transform
         self.df = pd.read_csv(self.data_path)
 
@@ -71,7 +73,10 @@ class KaggleMNISTDataset(Dataset_Interface):
             if self.target_transform is not None:
                 target = self.target_transform(target)
 
-        return sample, target if self.train else sample
+        if self.rbg:
+            sample = sample.repeat(3, 1, 1)
+
+        return (sample, target) if self.train else sample
 
 
 if __name__ == "__main__":
