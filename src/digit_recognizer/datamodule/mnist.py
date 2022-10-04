@@ -125,9 +125,10 @@ class KaggleMNISTDataModule(DataModule_Interface):
             batch_size (int, optional): Batch Size used to DataLoader. Defaults to 32.
             val_split (float, optional): Percentage Split between train_dataset and val_dataset. Defaults to 0.2.
         """
-        super(KaggleMNISTDataModule, self).__init__(data_dir, batch_size, val_split)
+        super(KaggleMNISTDataModule, self).__init__(
+            data_dir, batch_size, val_split, rbg
+        )
 
-        self.rbg = rbg
         self.transforms = transforms.Compose(
             [
                 transforms.ToPILImage(),

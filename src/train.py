@@ -143,5 +143,5 @@ def main():
 
 
 if __name__ == "__main__":
+    ## python3 train.py -m basic_conv_net -v 0 -e 3
     main()
-## python3 train.py -m basic_conv_net -v 0 -e 3
