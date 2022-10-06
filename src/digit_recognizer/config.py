@@ -22,9 +22,11 @@ MODEL_PARAMS = {
     "basic_conv_net": {
         "model": BasicConvNet,
         "rbg": False,
+        "pretrained": False,
     },
     "pretrained_resnet50": {
         "model": PretrainedResNet50,
         "rbg": True,
+        "pretrained": True,
     },
 }
