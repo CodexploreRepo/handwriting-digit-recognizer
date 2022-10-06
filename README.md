@@ -1,6 +1,7 @@
 # Handwriting Digit Recognizer using Deep Learning
 
 - Inspiration: [Kaggle Digit Recognizer](https://www.kaggle.com/competitions/digit-recognizer/)
+- FastAPI Image (ResNet50): https://hub.docker.com/repository/docker/lequan2902/mnist_digit:latest
 
 ## Installation
 
