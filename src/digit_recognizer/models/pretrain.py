@@ -127,6 +127,7 @@ class PretrainedResNet50(PretrainedAbstract):
         num_classes: int = 10,
         lr: float = 1e-4,
         dropout_rate: float = 0.3,
+        pretrained_weights=False,
         freeze: Union[bool, int] = False,
     ):
         """Pretrained ResNet50
@@ -138,13 +139,19 @@ class PretrainedResNet50(PretrainedAbstract):
 
             dropout_rate (float, optional): Dropout Rate. Defaults to 0.3.
 
+            pretrained_weights (bool, optional): Whether to load pretrained weights. Defaults to False.
+
             freeze (Union[bool, int], optional): bool or int. If True, freeze
             weights for all layers under ResNet model. If False, do not freeze
             weights for any layers. If given int value, freeze weights of the
             first (bottom) number of layers. Defaults to False.
         """
         super(PretrainedResNet50, self).__init__(num_classes, lr, dropout_rate)
-        self.model = resnet50(weights=ResNet50_Weights.DEFAULT)
+        if pretrained_weights:
+            self.model = resnet50(weights=ResNet50_Weights.DEFAULT)
+        else:
+            self.model = resnet50()
+
         # To update self.featveclen attribute
         self.replace_last_layer()
 
