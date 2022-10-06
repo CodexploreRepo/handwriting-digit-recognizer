@@ -5,7 +5,7 @@ import os
 import pathlib
 
 from digit_recognizer.models.conv_net import BasicConvNet
-from digit_recognizer.models.pretrain import PretrainedResNet50
+from digit_recognizer.models.pretrain import PretrainedResNet18, PretrainedResNet50
 
 SEED = 42
 
@@ -25,6 +25,10 @@ MODEL_PARAMS = {
     },
     "pretrained_resnet50": {
         "model": PretrainedResNet50,
+        "rbg": True,
+    },
+    "pretrained_resnet18": {
+        "model": PretrainedResNet18,
         "rbg": True,
     },
 }
