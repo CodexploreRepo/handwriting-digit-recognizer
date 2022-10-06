@@ -18,7 +18,15 @@ class BasicConvNet(Model_Interface):
     4. 3 fc layers with Dropout
     """
 
-    def __init__(self, num_classes=10, lr=1e-4, dropout_rate=0.3):
+    def __init__(self, num_classes=10, lr=1e-4, dropout_rate=0.3, pretrained=False):
+        """_summary_
+
+        Args:
+            num_classes (int, optional): Number of digit classes. Defaults to 10.
+            lr (_type_, optional): Learning Rate. Defaults to 1e-4.
+            dropout_rate (float, optional): Rate of Dropout regularization. Defaults to 0.3.
+            pretrained (bool, optional): Apply Pretrained Weights. Defaults to False.
+        """
         super(BasicConvNet, self).__init__(num_classes, lr, dropout_rate)
         self.conv1 = nn.Conv2d(
             in_channels=1, out_channels=32, kernel_size=3, stride=1, padding=1
