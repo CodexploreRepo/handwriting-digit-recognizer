@@ -1,7 +1,7 @@
 # Handwriting Digit Recognizer using Deep Learning
 
 - Inspiration: [Kaggle Digit Recognizer](https://www.kaggle.com/competitions/digit-recognizer/)
-- FastAPI Image (ResNet50): https://hub.docker.com/repository/docker/lequan2902/mnist_digit:latest
+- FastAPI Image (ResNet50): https://hub.docker.com/repository/docker/lequan2902/digit_recognizer:latest
 
 ## Installation
 
@@ -62,4 +62,16 @@ For the extra modules, which are not a standard pip modules (either from your ow
 pytest --durations=0 #Show all times for tests and setup and teardown
 
 pytest --durations=1 #Just show me the slowest
+```
+
+## Docker
+
+- To build a container image: `docker build -t <image_name>:<tag_name> <dockerfile dir>`
+- To push to dockerhub, image_name = user_id/repo_id
+
+Example:
+```Shell
+docker build -t lequan2902/digit_recognizer:latest . ### Remember the dot (current directory)
+
+docker push lequan2902/digit_recognizer:latest
 ```
