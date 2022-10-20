@@ -92,7 +92,9 @@ def main():
     )
 
     if model_name in MODEL_PARAMS:
-        model = MODEL_PARAMS[model_name]["model"](lr=learning_rate)
+        model = MODEL_PARAMS[model_name]["model"](
+            lr=learning_rate, pretrained_weights=MODEL_PARAMS[model_name]["pretrained"]
+        )
     else:
         raise Exception("Model Not Setup. Please configure your model in config.py")
 

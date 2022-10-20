@@ -25,3 +25,18 @@ def plot_sample(ds: Union[Dataset, List], train: bool = True) -> None:
                 ax.set_title(label)
 
     plt.show()
+
+
+def save_sample(ds: Union[Dataset, List], num_samples=10) -> None:
+    """This is to save the samples
+
+    Args:
+        ds (torch.utils.data.Dataset): Pytorch Dataset Class
+    """
+
+    idx_list = list(range(len(ds)))
+    idx = random.randint(0, len(idx_list) - 1)
+    for _ in range(num_samples):
+        img, label = ds[idx_list.pop(idx)]
+        plt.imshow(img, cmap="gray")
+        plt.savefig(f"{idx}-{label}.png")
